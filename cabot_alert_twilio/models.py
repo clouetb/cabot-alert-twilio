@@ -3,7 +3,7 @@ from os import environ as env
 from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import Context, Template
 
 from twilio.rest import TwilioRestClient
@@ -19,9 +19,11 @@ sms_template = "Service {{ service.name }} {% if service.overall_status == servi
 
 logger = logging.getLogger(__name__)
 
+
 class TwilioPhoneCall(AlertPlugin):
     name = "Twilio Phone Call"
     author = "Jonathan Balls"
+
     def send_alert(self, service, users, duty_officers):
 
         account_sid = env.get('TWILIO_ACCOUNT_SID')
@@ -46,7 +48,7 @@ class TwilioPhoneCall(AlertPlugin):
                     url=url,
                     method='GET',
                 )
-            except Exception, e:
+            except Exception as e:
                 logger.exception('Error making twilio phone call: %s' % e)
 
 class TwilioSMS(AlertPlugin):
@@ -78,7 +80,7 @@ class TwilioSMS(AlertPlugin):
                     from_=outgoing_number,
                     body=message,
                 )
-            except Exception, e:
+            except Exception as e:
                 logger.exception('Error sending twilio sms: %s' % e)
 
 class TwilioUserData(AlertPluginUserData):
